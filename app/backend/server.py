@@ -12,6 +12,7 @@ async def websocket_endpoint(websocket: WebSocket):
     pose_queue = queue.Queue()
 
     def callback(pose_data):
+        print(f"[Backend] Callback received pose_data: {pose_data}")
         pose_queue.put(pose_data)
 
     t = threading.Thread(target=run_pose_detection, args=(callback,), daemon=True)
