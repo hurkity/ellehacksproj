@@ -4,7 +4,7 @@ import mediapipe as mp
 from mediapipe.tasks.python import BaseOptions
 from mediapipe.tasks.python.vision import PoseLandmarker, PoseLandmarkerOptions, PoseLandmarkerResult, RunningMode
 
-MODEL_PATH = "app/shared/models/pose_landmarker_lite.task"
+MODEL_PATH = "..\..\shared\models\pose_landmarker_lite.task"
 
 POSE_CONNECTIONS = [
     (0,11),(0,12),(11,12),(11,13),(13,15),(12,14),(14,16),
@@ -13,48 +13,59 @@ POSE_CONNECTIONS = [
     (11,23),(12,24)
 ]
 
-# OpenCV webcam
-cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
-if not cap.isOpened():
-    print("ERROR: Could not open webcam")
-    exit()
 
-frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+def run_pose_detection(process_frame_callback=None):
+    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    if not cap.isOpened():
+        print("ERROR: Could not open webcam")
+        return
 
-# PoseLandmarker synchronous (IMAGE mode works for real-time frames)
-options = PoseLandmarkerOptions(
-    base_options=BaseOptions(model_asset_path=MODEL_PATH),
-    running_mode=RunningMode.IMAGE  # synchronous mode
-)
+    frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-with PoseLandmarker.create_from_options(options) as landmarker:
-    while True:
-        ret, frame = cap.read()
-        if not ret:
-            continue
+    options = PoseLandmarkerOptions(
+        base_options=BaseOptions(model_asset_path=MODEL_PATH),
+        running_mode=RunningMode.IMAGE  # synchronous mode
+    )
 
-        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame_rgb)
+    with PoseLandmarker.create_from_options(options) as landmarker:
+        while True:
+            ret, frame = cap.read()
+            if not ret:
+                continue
 
-        # Synchronous detection
-        result = landmarker.detect(mp_image)
+            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame_rgb)
+            result = landmarker.detect(mp_image)
 
-        # Draw landmarks and skeleton lines
-        if result.pose_landmarks:
-            landmarks = result.pose_landmarks[0]
-            for lm in landmarks:
-                x = int(lm.x * frame_width)
-                y = int(lm.y * frame_height)
-                cv2.circle(frame, (x, y), 5, (0, 255, 0), -1)
-            for start_idx, end_idx in POSE_CONNECTIONS:
-                x1, y1 = int(landmarks[start_idx].x * frame_width), int(landmarks[start_idx].y * frame_height)
-                x2, y2 = int(landmarks[end_idx].x * frame_width), int(landmarks[end_idx].y * frame_height)
-                cv2.line(frame, (x1, y1), (x2, y2), (0, 0, 255), 2)
+            if process_frame_callback:
+                # Pass normalized landmarks to callback
+                pose_data = {"landmarks": []}
+                if result.pose_landmarks:
+                    landmarks = result.pose_landmarks[0]
+                    for lm in landmarks:
+                        pose_data["landmarks"].append({"x": lm.x, "y": lm.y})
+                process_frame_callback(pose_data)
+            else:
+                # Draw landmarks and skeleton lines
+                if result.pose_landmarks:
+                    landmarks = result.pose_landmarks[0]
+                    for lm in landmarks:
+                        x = int(lm.x * frame_width)
+                        y = int(lm.y * frame_height)
+                        cv2.circle(frame, (x, y), 5, (0, 255, 0), -1)
+                    for start_idx, end_idx in POSE_CONNECTIONS:
+                        x1, y1 = int(landmarks[start_idx].x * frame_width), int(landmarks[start_idx].y * frame_height)
+                        x2, y2 = int(landmarks[end_idx].x * frame_width), int(landmarks[end_idx].y * frame_height)
+                        cv2.line(frame, (x1, y1), (x2, y2), (0, 0, 255), 2)
 
-        cv2.imshow("Pose Skeleton", frame)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+                cv2.imshow("Pose Skeleton", frame)
+                if cv2.waitKey(1) & 0xFF == ord('q'):
+                    break
 
-cap.release()
-cv2.destroyAllWindows()
+    cap.release()
+    if not process_frame_callback:
+        cv2.destroyAllWindows()
+
+if __name__ == "__main__":
+    run_pose_detection()

@@ -19,20 +19,33 @@ const GameCamera: React.FC = () => {
 			}
 		};
 		getCamera();
+		console.log('GameCamera mounted');
 
 		// WebSocket setup
-		wsRef.current = new WebSocket('ws://localhost:8000/ws/pose');
-		wsRef.current.onmessage = (event) => {
-			const data = JSON.parse(event.data);
-			drawSkeleton(data.landmarks);
-		};
-		wsRef.current.onopen = () => {
-			// Optionally send a message to backend
-			wsRef.current?.send('frontend connected');
-		};
-		wsRef.current.onerror = (err) => {
-			console.error('WebSocket error:', err);
-		};
+		try {
+			console.log('Attempting to create WebSocket...');
+			wsRef.current = new WebSocket('ws://127.0.0.1:8000/ws/pose');
+			wsRef.current.onopen = () => {
+				console.log('WebSocket connection opened');
+				wsRef.current?.send('frontend connected');
+			};
+			wsRef.current.onmessage = (event) => {
+				const data = JSON.parse(event.data);
+				console.log('Received pose data:', data);
+				if (data.landmarks && data.landmarks.length > 0) {
+					drawSkeleton(data.landmarks);
+				}
+			};
+			wsRef.current.onerror = (err) => {
+				console.error('WebSocket error:', err);
+				alert('WebSocket connection error. Check if backend is running.');
+			};
+			wsRef.current.onclose = () => {
+				console.warn('WebSocket connection closed');
+			};
+		} catch (e) {
+			console.error('Failed to create WebSocket:', e);
+		}
 		return () => {
 			wsRef.current?.close();
 		};
