@@ -1,0 +1,32 @@
+{
+  "userScores": [
+    100,
+    120,
+    90,
+    0,
+    0,
+    0,
+    0,
+    2,
+    2,
+    2,
+    0,
+    2,
+    0
+  ],
+  "userTotalScore": 318,
+  "leaderboard": [
+    {
+      "username": "hurkity",
+      "highScore": 318
+    },
+    {
+      "username": "jeni",
+      "highScore": 140
+    },
+    {
+      "username": "vivian",
+      "highScore": 120
+    }
+  ]
+}
