@@ -1,9 +1,9 @@
-export default function Home() {
+import Login from "./components/login/LoginPage";
+
+export default function LogIn() {
   return (
     <main style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
-      <h1>Welcome to the Pose Detection App!</h1>
-      <p>Click below to start the game.</p>
-      <a href="/game" style={{ color: 'blue', textDecoration: 'underline', marginTop: '1rem' }}>Go to Game</a>
+      <Login />
     </main>
   );
 }
