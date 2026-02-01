@@ -6,39 +6,18 @@ const ModeSelect: React.FC = () => {
   const router = useRouter();
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 32 }}>
-      <button
-        style={{
-          padding: "16px 32px",
-          fontSize: 24,
-          borderRadius: 8,
-          background: "#4caf50",
-          color: "#fff",
-          border: "none",
-          cursor: "pointer",
-          marginBottom: 16,
-          width: 260,
-        }}
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 24 }}>
+      <img
+        src="/solostretch.png"
+        alt="Solo Stretch"
+        style={{ width: 180, height: 'auto', cursor: 'pointer', borderRadius: 12 }}
         onClick={() => router.push("/levels")}
-      >
-        Single Player Mode
-      </button>
-      <button
-        style={{
-          padding: "16px 32px",
-          fontSize: 24,
-          borderRadius: 8,
-          background: "#888",
-          color: "#fff",
-          border: "none",
-          cursor: "not-allowed",
-          opacity: 0.6,
-          width: 260,
-        }}
-        disabled
-      >
-        Multiplayer Mode (Locked)
-      </button>
+      />
+      <img
+        src="/coop.png"
+        alt="Co-op Mode"
+        style={{ width: 180, height: 'auto', opacity: 0.7, borderRadius: 12 }}
+      />
     </div>
   );
 };

@@ -1,4 +1,12 @@
 "use client";
+// Add Racing Sans One font import for browser
+if (typeof window !== 'undefined') {
+  const fontLink = document.createElement('link');
+  fontLink.href = 'https://fonts.googleapis.com/css2?family=Racing+Sans+One&display=swap';
+  fontLink.rel = 'stylesheet';
+  document.head.appendChild(fontLink);
+}
+
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -78,7 +86,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     alignItems: "center",
     justifyContent: "center",
     overflow: "visible",
-    fontFamily: "'Orbitron', Arial, sans-serif",
+    fontFamily: "'Racing Sans One', Arial, sans-serif",
+    color: '#ff69b4',
   },
 
   skewedBg: {
@@ -107,10 +116,12 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 
   title: {
-    color: "#1d376a",
-    fontSize: "42px",
+    color: "#df3696",
+    fontFamily: "'Racing Sans One', Arial, sans-serif",
+    fontSize: "48px",
     letterSpacing: "4px",
     marginBottom: "30px",
+    fontWeight: 900,
   },
 
   input: {
@@ -121,8 +132,10 @@ const styles: { [key: string]: React.CSSProperties } = {
     backgroundColor: "#a3d6ff",
     border: "2px solid #75b5ff",
     borderRadius: "6px",
-    color: "#1d376a",
+    color: "#df3696",
     outline: "none",
+    fontFamily: "'Racing Sans One', Arial, sans-serif",
+    fontWeight: 200,
   },
 
   button: {
@@ -131,30 +144,36 @@ const styles: { [key: string]: React.CSSProperties } = {
     backgroundColor: "#ff9f43",
     border: "none",
     borderRadius: "6px",
-    fontSize: "18px",
-    fontWeight: "bold",
+    fontSize: "20px",
+    fontWeight: 900,
     cursor: "pointer",
-    color: "#1d376a",
+    color: "#df3696",
     marginTop: "10px",
+    fontFamily: "'Racing Sans One', Arial, sans-serif",
+    letterSpacing: 2,
   },
 
   error: {
     color: "#ff4d4d",
     fontSize: "14px",
     marginBottom: "10px",
+    fontFamily: "'Racing Sans One', Arial, sans-serif",
   },
 
   footer: {
     marginTop: "25px",
     display: "flex",
     justifyContent: "space-between",
-    fontSize: "12px",
-    color: "#1d376a",
+    fontSize: "14px",
+    color: "#ff69b4",
+    fontFamily: "'Racing Sans One', Arial, sans-serif",
   },
 
   link: {
     cursor: "pointer",
     textDecoration: "underline",
+    color: "#ff69b4",
+    fontFamily: "'Racing Sans One', Arial, sans-serif",
   },
 };
 

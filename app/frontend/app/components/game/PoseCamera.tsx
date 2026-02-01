@@ -355,9 +355,9 @@ interface PoseCameraProps {
 }
 
 const PoseCamera: React.FC<PoseCameraProps> = ({ 
-  targetStretch = 'ARMS_UP',
+  targetStretch,
   onPoseMatch,
-  showDebug = true  // Temporarily enable debug by default
+  showDebug = true
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -366,6 +366,12 @@ const PoseCamera: React.FC<PoseCameraProps> = ({
   const [showGoodJob, setShowGoodJob] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Use refs to always access latest props in callbacks
+  const targetStretchRef = useRef(targetStretch);
+  const onPoseMatchRef = useRef(onPoseMatch);
+  useEffect(() => { targetStretchRef.current = targetStretch; }, [targetStretch]);
+  useEffect(() => { onPoseMatchRef.current = onPoseMatch; }, [onPoseMatch]);
 
   useEffect(() => {
     let camera: any = null;
@@ -426,27 +432,30 @@ const PoseCamera: React.FC<PoseCameraProps> = ({
 
         pose.onResults((results: any) => {
           if (!running) return;
-          
           if (results.poseLandmarks && canvasRef.current) {
             const landmarks = results.poseLandmarks;
-            const angles = extractJointAngles(landmarks);
-            const targetPose = TARGET_STRETCHES[targetStretch];
-            const validation = validatePose(angles, targetPose);
-
-            setCurrentAngles(angles);
-            setPoseValidation(validation);
-
-            // Show good job message for high scores
-            if (validation.score >= 70) {
-              setShowGoodJob(true);
-              setTimeout(() => setShowGoodJob(false), 2000); // Hide after 2 seconds
+            // Only validate pose if a targetStretch is provided
+            let validation = null;
+            const currentTarget = targetStretchRef.current;
+            if (currentTarget && TARGET_STRETCHES[currentTarget]) {
+              const angles = extractJointAngles(landmarks);
+              const targetPose = TARGET_STRETCHES[currentTarget];
+              validation = validatePose(angles, targetPose);
+              setCurrentAngles(angles);
+              setPoseValidation(validation);
+              // Show good job message for high scores
+              if (validation.score >= 70) {
+                setShowGoodJob(true);
+                setTimeout(() => setShowGoodJob(false), 2000);
+              }
+              // Call parent callback for rhythm game logic
+              if (onPoseMatchRef.current) {
+                onPoseMatchRef.current(validation.isMatch || false, validation.score || 0);
+              }
+            } else {
+              setPoseValidation(null);
+              setCurrentAngles(null);
             }
-
-            // Call parent callback for rhythm game logic
-            if (onPoseMatch) {
-              onPoseMatch(validation.isMatch || false, validation.score || 0);
-            }
-
             const ctx = canvasRef.current.getContext("2d");
             if (ctx) {
               drawPoseWithAngles(ctx, landmarks, validation);
@@ -485,10 +494,10 @@ const PoseCamera: React.FC<PoseCameraProps> = ({
       if (camera) camera.stop();
       if (pose) pose.close();
     };
-  }, [targetStretch, onPoseMatch]);
+  }, []); // Only run once on mount
 
   return (
-    <div style={{ position: "relative", width: 640, height: 480, backgroundColor: "#000" }}>
+    <div style={{ position: "fixed", inset: 0, width: "100vw", height: "100vh", backgroundColor: "#000", zIndex: 1 }}>
       {isLoading && (
         <div style={{
           position: "absolute",
@@ -497,12 +506,12 @@ const PoseCamera: React.FC<PoseCameraProps> = ({
           transform: "translate(-50%, -50%)",
           color: "white",
           fontSize: "18px",
-          textAlign: "center"
+          textAlign: "center",
+          zIndex: 10
         }}>
           Loading camera and pose detection...
         </div>
       )}
-      
       {error && (
         <div style={{
           position: "absolute",
@@ -514,27 +523,26 @@ const PoseCamera: React.FC<PoseCameraProps> = ({
           textAlign: "center",
           padding: "20px",
           backgroundColor: "rgba(0,0,0,0.8)",
-          borderRadius: "8px"
+          borderRadius: "8px",
+          zIndex: 10
         }}>
           Error: {error}<br/>
           Please refresh and allow camera access
         </div>
       )}
-      
       <video 
         ref={videoRef} 
-        style={{ position: "absolute", width: 640, height: 480, transform: "scaleX(-1)" }} 
+        style={{ position: "absolute", top: 0, left: 0, width: "100vw", height: "100vh", objectFit: "cover", transform: "scaleX(-1)", zIndex: 1 }} 
         autoPlay 
         playsInline 
         muted 
       />
       <canvas 
         ref={canvasRef} 
-        width={640} 
-        height={480} 
-        style={{ position: "absolute", left: 0, top: 0, transform: "scaleX(-1)" }} 
+        width={window.innerWidth}
+        height={window.innerHeight}
+        style={{ position: "absolute", left: 0, top: 0, width: "100vw", height: "100vh", pointerEvents: "none", transform: "scaleX(-1)", zIndex: 2 }} 
       />
-      
       {/* Good Job Message */}
       {showGoodJob && (
         <div style={{
