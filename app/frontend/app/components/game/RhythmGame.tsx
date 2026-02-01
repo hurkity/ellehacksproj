@@ -22,7 +22,7 @@ type PoseType = typeof POSE_OPTIONS[number];
 // ===================================
 // POSE IMAGE MAPPING
 // ===================================
-const POSE_IMAGES: Record<string, string> = {
+const POSE_images: Record<string, string> = {
   REACH_RIGHT_HIP: '/poses/REACH_RIGHT_HIP.png',
   REACH_LEFT_HIP: '/poses/REACH_LEFT_HIP.png',
   MIDDLE_SPLITS: '/poses/MIDDLE_SPLITS.png',
@@ -42,16 +42,16 @@ interface PoseEvent {
 }
 
 const defaultRoutine: PoseEvent[] = [
-  { time: 4, pose: "REACH_RIGHT_HIP" },
-  { time: 8, pose: "REACH_LEFT_HIP" },
-  { time: 12, pose: "MIDDLE_SPLITS" },
-  { time: 16, pose: "MIDDLE_SPLITS_LEFT" },
-  { time: 20, pose: "MIDDLE_SPLITS_RIGHT" },
-  { time: 24, pose: "KICK_LEFT_UP" },
-  { time: 28, pose: "KICK_RIGHT_UP" },
-  { time: 32, pose: "COBRA" },
-  { time: 36, pose: "BUTTERFLY" },
-  { time: 40, pose: "BUTTERFLY_REACH" }
+  { time: 8, pose: "REACH_RIGHT_HIP" },
+  { time: 16, pose: "REACH_LEFT_HIP" },
+  { time: 24, pose: "MIDDLE_SPLITS" },
+  { time: 32, pose: "MIDDLE_SPLITS_LEFT" },
+  { time: 40, pose: "MIDDLE_SPLITS_RIGHT" },
+  { time: 48, pose: "KICK_LEFT_UP" },
+  { time: 56, pose: "KICK_RIGHT_UP" },
+  { time: 64, pose: "COBRA" },
+  { time: 72, pose: "BUTTERFLY" },
+  { time: 80, pose: "BUTTERFLY_REACH" }
 ];
 
 const RhythmGame: React.FC = () => {
@@ -145,9 +145,7 @@ const RhythmGame: React.FC = () => {
     }
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
-      if (audioRef.current) {
-        audioRef.current.pause();
-      }
+      // Do NOT pause audio here, let it keep playing until user leaves page
     };
   }, []);
 
@@ -180,7 +178,7 @@ const RhythmGame: React.FC = () => {
   };
 
   return (
-    <div style={{ position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden', background: '#000' }}>
+    <div style={{ position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden', background: '#000', fontFamily: 'Racing Sans One, cursive' }}>
       <audio ref={audioRef} src="/audio/Better_When_I'm_Dancing_-_Meghan_Trainor_(Lyrics)_🎵_128k.mp3" preload="auto" />
       <PoseCamera
         targetStretch={gameActive && poseWindow ? routine[routineIdx]?.pose : undefined}
@@ -189,31 +187,30 @@ const RhythmGame: React.FC = () => {
         showDebug={false}
       />
       {/* Overlay: Score and Start Button */}
-      <div style={{ position: 'absolute', top: 24, left: 24, zIndex: 10, background: 'rgba(255, 182, 193, 0.92)', borderRadius: 16, padding: '22px 38px', color: '#fff', minWidth: 240, boxShadow: '0 2px 16px #ff69b4', border: '3px solid #ff9800' }}>
+      <div style={{ position: 'absolute', top: 24, left: 24, zIndex: 10, background: 'rgba(255, 182, 193, 0.92)', borderRadius: 16, padding: '22px 38px', color: '#fff', minWidth: 240, boxShadow: '0 2px 16px #ff69b4', border: '3px solid #ff9800', fontFamily: 'Racing Sans One, cursive' }}>
         <div style={{ fontSize: 32, fontWeight: 800, marginBottom: 12, color: '#ff69b4', textShadow: '0 2px 8px #fff3' }}>Score: {score}</div>
-        <button onClick={startGame} disabled={gameActive} style={{ padding: '14px 36px', fontSize: 24, borderRadius: 10, background: '#ff9800', color: '#fff', border: 'none', cursor: gameActive ? 'not-allowed' : 'pointer', marginBottom: 12, fontWeight: 700, boxShadow: '0 2px 8px #ff980055' }}>
+        <button onClick={startGame} disabled={gameActive} style={{ padding: '14px 36px', fontSize: 24, borderRadius: 10, background: '#ff9800', color: '#fff', border: 'none', cursor: gameActive ? 'not-allowed' : 'pointer', marginBottom: 12, fontWeight: 700, boxShadow: '0 2px 8px #ff980055', fontFamily: 'Racing Sans One, cursive' }}>
           Start Game
         </button>
         {/* Game over UI and navigation handled on /score page */}
       </div>
       {/* Overlay: Current Move Only */}
-      <div style={{ position: 'absolute', top: 24, right: 24, zIndex: 10, background: 'rgba(255, 236, 179, 0.95)', borderRadius: 16, padding: '22px 38px', color: '#222', minWidth: 340, boxShadow: '0 2px 16px #ff9800', border: '3px solid #ff69b4' }}>
+      <div style={{ position: 'absolute', top: 24, right: 24, zIndex: 10, background: 'rgba(255, 236, 179, 0.95)', borderRadius: 16, padding: '22px 38px', color: '#222', minWidth: 340, boxShadow: '0 2px 16px #ff9800', border: '3px solid #ff69b4', fontFamily: 'Racing Sans One, cursive' }}>
         <div style={{ fontWeight: 700, fontSize: 24, marginBottom: 14, color: '#ff9800', textShadow: '0 2px 8px #fff6' }}>Current Move</div>
         
         {/* Pose Image and Details Container */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '12px' }}>
           {/* Pose Image */}
-          {routine[routineIdx]?.pose && POSE_IMAGES[routine[routineIdx].pose] && (
+          {routine[routineIdx]?.pose && POSE_images[routine[routineIdx].pose] && (
             <div style={{ flex: '0 0 auto' }}>
               <img 
-                src={POSE_IMAGES[routine[routineIdx].pose]} 
+                src={POSE_images[routine[routineIdx].pose]} 
                 alt={`${routine[routineIdx].pose} demonstration`}
                 style={{ 
                   width: '120px', 
                   height: '120px', 
                   objectFit: 'contain',
                   borderRadius: '8px',
-                  border: '2px solid #ff69b4'
                 }}
                 onError={(e) => {
                   // Hide image if it fails to load
@@ -227,16 +224,7 @@ const RhythmGame: React.FC = () => {
           <div style={{ flex: '1 1 auto' }}>
             <div style={{ fontSize: 22, fontWeight: 800, color: '#ff69b4', marginBottom: 8 }}>
               Beat {routine[routineIdx]?.time}: <strong>{routine[routineIdx]?.pose.replace('_', ' ')}</strong>
-              {poseWindow ? ' ← Now' : ''}
             </div>
-            <div style={{ fontSize: 18 }}>
-              <strong>Current Beat:</strong> {currentBeat}
-            </div>
-            {poseWindow && (
-              <div style={{ marginTop: 8, color: poseMatch ? '#ff69b4' : '#ff9800', fontWeight: 700, fontSize: 16 }}>
-                {poseMatch ? '✅ Pose Matched!' : `🎯 Hit pose: ${routine[routineIdx]?.pose.replace('_', ' ')}`}
-              </div>
-            )}
           </div>
         </div>
       </div>

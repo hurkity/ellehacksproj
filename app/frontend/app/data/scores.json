@@ -7,13 +7,18 @@
     0,
     0,
     0,
-    2
+    2,
+    2,
+    2,
+    0,
+    2,
+    0
   ],
-  "userTotalScore": 312,
+  "userTotalScore": 318,
   "leaderboard": [
     {
       "username": "hurkity",
-      "highScore": 312
+      "highScore": 318
     },
     {
       "username": "jeni",
