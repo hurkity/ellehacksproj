@@ -1,4 +1,4 @@
-# Rhythm Stretch Game
+# Meowbility
 
 A web-based rhythm stretching game using pose detection and music.
 
