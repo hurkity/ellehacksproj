@@ -19,6 +19,23 @@ const POSE_OPTIONS = [
 
 type PoseType = typeof POSE_OPTIONS[number];
 
+// ===================================
+// POSE IMAGE MAPPING
+// ===================================
+const POSE_IMAGES: Record<string, string> = {
+  REACH_RIGHT_HIP: '/poses/REACH_RIGHT_HIP.png',
+  REACH_LEFT_HIP: '/poses/REACH_LEFT_HIP.png',
+  MIDDLE_SPLITS: '/poses/MIDDLE_SPLITS.png',
+  MIDDLE_SPLITS_LEFT: '/poses/MIDDLE_SPLITS_LEFT.png',
+  MIDDLE_SPLITS_RIGHT: '/poses/MIDDLE_SPLITS_RIGHT.png',
+  KICK_LEFT_UP: '/poses/KICK_LEFT_UP.png',
+  KICK_RIGHT_UP: '/poses/KICK_RIGHT_UP.png',
+  COBRA: '/poses/COBRA.png',
+  BUTTERFLY: '/poses/BUTTERFLY.png',
+  BUTTERFLY_REACH: '/poses/BUTTERFLY_REACH.png',
+  // Add more images as they become available
+};
+
 interface PoseEvent {
   time: number; // seconds or beat count
   pose: PoseType; // key from POSE_OPTIONS
@@ -164,7 +181,7 @@ const RhythmGame: React.FC = () => {
 
   return (
     <div style={{ position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden', background: '#000' }}>
-      <audio ref={audioRef} src="/audio/Mark Ronson - Uptown Funk (Lyrics) ft. Bruno Mars.mp3" preload="auto" />
+      <audio ref={audioRef} src="/audio/Better_When_I'm_Dancing_-_Meghan_Trainor_(Lyrics)_🎵_128k.mp3" preload="auto" />
       <PoseCamera
         targetStretch={gameActive && poseWindow ? routine[routineIdx]?.pose : undefined}
         score={score}
@@ -182,17 +199,45 @@ const RhythmGame: React.FC = () => {
       {/* Overlay: Current Move Only */}
       <div style={{ position: 'absolute', top: 24, right: 24, zIndex: 10, background: 'rgba(255, 236, 179, 0.95)', borderRadius: 16, padding: '22px 38px', color: '#222', minWidth: 340, boxShadow: '0 2px 16px #ff9800', border: '3px solid #ff69b4' }}>
         <div style={{ fontWeight: 700, fontSize: 24, marginBottom: 14, color: '#ff9800', textShadow: '0 2px 8px #fff6' }}>Current Move</div>
-        <div style={{ fontSize: 22, fontWeight: 800, color: '#ff69b4', marginBottom: 12 }}>
-          Beat {routine[routineIdx]?.time}: <strong>{routine[routineIdx]?.pose.replace('_', ' ')}</strong>
-          {poseWindow ? ' ← Now' : ''}
-        </div>
-        <div style={{ marginTop: 16, fontSize: 18 }}>
-          <strong>Current Beat:</strong> {currentBeat}
-          {poseWindow && (
-            <span style={{ marginLeft: 18, color: poseMatch ? '#ff69b4' : '#ff9800', fontWeight: 700, borderBottom: '2px solid #00bfff' }}>
-              {poseMatch ? 'Pose Matched!' : `Hit pose: ${routine[routineIdx]?.pose}`}
-            </span>
+        
+        {/* Pose Image and Details Container */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '12px' }}>
+          {/* Pose Image */}
+          {routine[routineIdx]?.pose && POSE_IMAGES[routine[routineIdx].pose] && (
+            <div style={{ flex: '0 0 auto' }}>
+              <img 
+                src={POSE_IMAGES[routine[routineIdx].pose]} 
+                alt={`${routine[routineIdx].pose} demonstration`}
+                style={{ 
+                  width: '120px', 
+                  height: '120px', 
+                  objectFit: 'contain',
+                  borderRadius: '8px',
+                  border: '2px solid #ff69b4'
+                }}
+                onError={(e) => {
+                  // Hide image if it fails to load
+                  (e.target as HTMLImageElement).style.display = 'none';
+                }}
+              />
+            </div>
           )}
+          
+          {/* Text Content */}
+          <div style={{ flex: '1 1 auto' }}>
+            <div style={{ fontSize: 22, fontWeight: 800, color: '#ff69b4', marginBottom: 8 }}>
+              Beat {routine[routineIdx]?.time}: <strong>{routine[routineIdx]?.pose.replace('_', ' ')}</strong>
+              {poseWindow ? ' ← Now' : ''}
+            </div>
+            <div style={{ fontSize: 18 }}>
+              <strong>Current Beat:</strong> {currentBeat}
+            </div>
+            {poseWindow && (
+              <div style={{ marginTop: 8, color: poseMatch ? '#ff69b4' : '#ff9800', fontWeight: 700, fontSize: 16 }}>
+                {poseMatch ? '✅ Pose Matched!' : `🎯 Hit pose: ${routine[routineIdx]?.pose.replace('_', ' ')}`}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

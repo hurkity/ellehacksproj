@@ -353,6 +353,19 @@ const STRETCH_SEQUENCE = [
 type StretchKey = keyof typeof TARGET_STRETCHES;
 
 // ===================================
+// POSE IMAGE MAPPING
+// ===================================
+const POSE_IMAGES: Record<string, string> = {
+  REACH_RIGHT_HIP: '/poses/REACH_RIGHT_HIP.png',
+  REACH_LEFT_HIP: '/poses/REACH_LEFT_HIP.png',
+  MIDDLE_SPLITS: '/poses/MIDDLE_SPLITS.png',
+  MIDDLE_SPLITS_LEFT: '/poses/MIDDLE_SPLITS_LEFT.png',
+  MIDDLE_SPLITS_RIGHT: '/poses/MIDDLE_SPLITS_RIGHT.png',
+  COBRA: '/poses/COBRA.png',
+  // Add more images as they become available
+};
+
+// ===================================
 // JOINT ANGLES EXTRACTION
 // ===================================
 const extractJointAngles = (landmarks: any[]) => {
@@ -478,9 +491,31 @@ const PoseCamera: React.FC<PoseCameraProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentStretchIndex, setCurrentStretchIndex] = useState(0);
+  const [canvasDimensions, setCanvasDimensions] = useState({ width: 800, height: 600 });
   
   const currentStretchKey = STRETCH_SEQUENCE[currentStretchIndex] as StretchKey;
   const currentStretch = TARGET_STRETCHES[currentStretchKey];
+  
+  // Set canvas dimensions after component mounts
+  useEffect(() => {
+    const updateDimensions = () => {
+      if (typeof window !== 'undefined') {
+        setCanvasDimensions({
+          width: window.innerWidth,
+          height: window.innerHeight
+        });
+      }
+    };
+    
+    updateDimensions();
+    window.addEventListener('resize', updateDimensions);
+    
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('resize', updateDimensions);
+      }
+    };
+  }, []);
   
   // Manual next stretch function
   const nextStretch = () => {
@@ -663,8 +698,8 @@ const PoseCamera: React.FC<PoseCameraProps> = ({
       />
       <canvas 
         ref={canvasRef} 
-        width={window.innerWidth}
-        height={window.innerHeight}
+        width={canvasDimensions.width}
+        height={canvasDimensions.height}
         style={{ position: "absolute", left: 0, top: 0, width: "100vw", height: "100vh", pointerEvents: "none", transform: "scaleX(-1)", zIndex: 2 }} 
       />
       {/* Good Job Message */}
@@ -759,20 +794,46 @@ const PoseCamera: React.FC<PoseCameraProps> = ({
         textAlign: "center",
         border: "2px solid #00FF00"
       }}>
-        <div style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "8px", color: "#00FF00" }}>
-          {currentStretch?.name}
-        </div>
-        <div style={{ fontSize: "16px", marginBottom: "10px" }}>
-          {currentStretch?.description}
-        </div>
-        <div style={{ fontSize: "14px", color: "#FFAA00" }}>
-          Try your best, then click "Next Stretch" to continue!
-        </div>
-        {currentStretchIndex === STRETCH_SEQUENCE.length - 1 && (
-          <div style={{ fontSize: "12px", color: "#FF6600", marginTop: "5px" }}>
-            🏆 FINAL STRETCH! 🏆
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '20px' }}>
+          {/* Pose Image */}
+          {POSE_IMAGES[currentStretchKey] && (
+            <div style={{ flex: '0 0 auto' }}>
+              <img 
+                src={POSE_IMAGES[currentStretchKey]} 
+                alt={`${currentStretch?.name} demonstration`}
+                style={{ 
+                  width: '150px', 
+                  height: '150px', 
+                  objectFit: 'contain',
+                  borderRadius: '8px',
+                  border: '2px solid #00FF00'
+                }}
+                onError={(e) => {
+                  // Hide image if it fails to load
+                  (e.target as HTMLImageElement).style.display = 'none';
+                }}
+              />
+            </div>
+          )}
+          
+          {/* Text Content */}
+          <div style={{ flex: '1 1 auto' }}>
+            <div style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "8px", color: "#00FF00" }}>
+              {currentStretch?.name}
+            </div>
+            <div style={{ fontSize: "16px", marginBottom: "10px" }}>
+              {currentStretch?.description}
+            </div>
+            <div style={{ fontSize: "14px", color: "#FFAA00" }}>
+              Try your best, then click "Next Stretch" to continue!
+            </div>
+            {currentStretchIndex === STRETCH_SEQUENCE.length - 1 && (
+              <div style={{ fontSize: "12px", color: "#FF6600", marginTop: "5px" }}>
+                🏆 FINAL STRETCH! 🏆
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
 
       {/* Debug angles display */}
