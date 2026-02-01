@@ -9,19 +9,26 @@ const RecentScore: React.FC = () => {
 
   return (
     <div style={{
-      background: "#222",
-      color: "#fff",
-      borderRadius: 12,
-      padding: 24,
+      background: "url('/recent_score.png') center/contain no-repeat",
+      color: "#ff69b4",
+      borderRadius: 0,
+      padding: 0,
       textAlign: "center",
-      boxShadow: "0 4px 16px rgba(0,0,0,0.2)",
-      maxWidth: 320,
-      margin: "0 auto"
+      width: 600,
+      height: 520,
+      margin: "0 auto",
+      position: 'relative',
+      overflow: 'hidden',
+      fontFamily: 'Racing Sans One, sans-serif',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
     }}>
-      <h2 style={{ marginBottom: 16 }}>Your Score</h2>
-      <div style={{ fontSize: 48, fontWeight: 700, marginBottom: 8 }}>{recentScore}</div>
-      <div style={{ fontSize: 18, color: "#aaa", marginBottom: 16 }}>Most Recent</div>
-      <div style={{ fontSize: 20, marginTop: 16 }}>Total Score: <span style={{ fontWeight: 600 }}>{userTotalScore}</span></div>
+      <h2 style={{ marginBottom: 18, fontSize: 38, color: '#ff69b4', fontWeight: 900 }}>Your Score</h2>
+      <div style={{ fontSize: 72, fontWeight: 900, marginBottom: 10, color: '#ff69b4' }}>{recentScore}</div>
+      <div style={{ fontSize: 22, color: "#ff69b4", marginBottom: 20, fontWeight: 100 }}>Most Recent</div>
+      <div style={{ fontSize: 28, marginTop: 24, color: '#ff69b4', fontWeight: 700 }}>Total Score: <span style={{ fontWeight: 900 }}>{userTotalScore}</span></div>
     </div>
   );
 };

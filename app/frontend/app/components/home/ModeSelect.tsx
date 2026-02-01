@@ -2,43 +2,29 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 
-const ModeSelect: React.FC = () => {
+
+interface ModeSelectProps {
+  buttonSize?: "large" | "default";
+}
+
+const ModeSelect: React.FC<ModeSelectProps> = ({ buttonSize = "default" }) => {
   const router = useRouter();
+  const imgSize = buttonSize === "large" ? 240 : 180;
+  const gapSize = 4;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 32 }}>
-      <button
-        style={{
-          padding: "16px 32px",
-          fontSize: 24,
-          borderRadius: 8,
-          background: "#4caf50",
-          color: "#fff",
-          border: "none",
-          cursor: "pointer",
-          marginBottom: 16,
-          width: 260,
-        }}
+    <div style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: gapSize }}>
+      <img
+        src="/solostretch.png"
+        alt="Solo Stretch"
+        style={{ width: imgSize, height: 'auto', cursor: 'pointer', borderRadius: 18}}
         onClick={() => router.push("/levels")}
-      >
-        Single Player Mode
-      </button>
-      <button
-        style={{
-          padding: "16px 32px",
-          fontSize: 24,
-          borderRadius: 8,
-          background: "#888",
-          color: "#fff",
-          border: "none",
-          cursor: "not-allowed",
-          opacity: 0.6,
-          width: 260,
-        }}
-        disabled
-      >
-        Multiplayer Mode (Locked)
-      </button>
+      />
+      <img
+        src="/coop.png"
+        alt="Co-op Mode"
+        style={{ width: imgSize, height: 'auto', opacity: 0.7, borderRadius: 18}}
+      />
     </div>
   );
 };

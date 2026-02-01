@@ -7,28 +7,37 @@ const LevelSelect: React.FC = () => {
   const levels = Array.from({ length: 10 }, (_, i) => i + 1);
 
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: 20, justifyContent: "center", maxWidth: 500, margin: "0 auto" }}>
-      {levels.map((level) => (
-        <button
-          key={level}
-          style={{
-            padding: "20px 32px",
-            fontSize: 22,
-            borderRadius: 8,
-            background: level === 1 ? "#2196f3" : "#888",
-            color: "#fff",
-            border: "none",
-            cursor: level === 1 ? "pointer" : "not-allowed",
-            opacity: level === 1 ? 1 : 0.6,
-            minWidth: 120,
-            marginBottom: 16,
-          }}
-          disabled={level !== 1}
-          onClick={() => level === 1 && router.push("/game")}
-        >
-          Level {level}
-        </button>
-      ))}
+    <div style={{ maxWidth: 700, margin: "0 auto" }}>
+      <h2 style={{
+        fontFamily: 'Racing Sans One, sans-serif',
+        fontSize: 44,
+        fontWeight: 900,
+        letterSpacing: 2,
+        color: '#ff69b4',
+        textAlign: 'center',
+        margin: '0 0 32px 0',
+        textShadow: '0 2px 8px #0002',
+      }}>
+        Select a Level
+      </h2>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 32, justifyContent: "center" }}>
+        {levels.map((level) => (
+          <img
+            key={level}
+            src={`/levels/${level}.png`}
+            alt={`Level ${level}`}
+            style={{
+              width: 140,
+              height: 140,
+              objectFit: 'cover',
+              borderRadius: 16,
+              cursor: level === 1 ? 'pointer' : 'not-allowed',
+              transition: 'transform 0.15s',
+            }}
+            onClick={() => level === 1 && router.push("/game")}
+          />
+        ))}
+      </div>
     </div>
   );
 };
