@@ -37,12 +37,17 @@ const Login: React.FC = () => {
 
   return (
     <div style={styles.page}>
+      {/* Left image */}
+      <div style={styles.leftImageContainer}>
+        <img src="/login.png" alt="Login" style={styles.leftImage} />
+      </div>
+
       {/* Skewed background */}
       <div style={styles.skewedBg} />
 
       {/* Login Panel */}
       <div style={styles.panel}>
-        <h1 style={styles.title}>LOGIN</h1>
+        <img src="/logo.png" alt="Meowbility Logo" style={{ width: 400, height: 'auto', marginBottom: 30, marginTop: -10, display: 'block', marginLeft: 'auto', marginRight: 'auto' }} />
 
         <input
           type="text"
@@ -78,6 +83,28 @@ const Login: React.FC = () => {
 };
 
 const styles: { [key: string]: React.CSSProperties } = {
+  leftImageContainer: {
+    position: "absolute",
+    left: 0,
+    top: 0,
+    bottom: 0,
+    width: "48vw",
+    height: "100vh",
+    zIndex: 0,
+    overflow: "hidden",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  leftImage: {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+    objectPosition: "center left",
+    display: "block",
+    pointerEvents: "none",
+    userSelect: "none",
+  },
   page: {
     position: "fixed",
     inset: 0,

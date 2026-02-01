@@ -461,12 +461,14 @@ const drawPoseWithAngles = (ctx: CanvasRenderingContext2D, landmarks: any[], val
 interface PoseCameraProps {
   onPoseMatch?: (isMatch: boolean, score: number, currentStretch: string, isComplete: boolean) => void;
   showDebug?: boolean;
+  score?: number;
 }
 
 const PoseCamera: React.FC<PoseCameraProps> = ({ 
   targetStretch,
   onPoseMatch,
-  showDebug = true
+  showDebug = true,
+  score = 0
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -700,6 +702,9 @@ const PoseCamera: React.FC<PoseCameraProps> = ({
         fontWeight: "bold",
         minWidth: "250px"
       }}>
+        <div style={{ fontSize: 28, color: '#ff69b4', fontWeight: 900, marginBottom: 8 }}>
+          Score: {score}
+        </div>
         <div style={{ color: "#00FF00", fontSize: "18px", marginBottom: "8px" }}>
           Stretch {currentStretchIndex + 1} of {STRETCH_SEQUENCE.length}
         </div>

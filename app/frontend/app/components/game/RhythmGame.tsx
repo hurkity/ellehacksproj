@@ -3,8 +3,19 @@ import React, { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import PoseCamera from "./PoseCamera";
 
-// Define available poses (must match PoseCamera TARGET_STRETCHES keys)
-const POSE_OPTIONS = ["ARMS_UP", "T_POSE", "WARRIOR", "SIDE_BEND"] as const;
+// Define available stretches (must match PoseCamera TARGET_STRETCHES keys)
+const POSE_OPTIONS = [
+  "REACH_RIGHT_HIP",
+  "REACH_LEFT_HIP",
+  "MIDDLE_SPLITS",
+  "MIDDLE_SPLITS_LEFT",
+  "MIDDLE_SPLITS_RIGHT",
+  "KICK_LEFT_UP",
+  "KICK_RIGHT_UP",
+  "COBRA",
+  "BUTTERFLY",
+  "BUTTERFLY_REACH"
+] as const;
 
 type PoseType = typeof POSE_OPTIONS[number];
 
@@ -14,10 +25,16 @@ interface PoseEvent {
 }
 
 const defaultRoutine: PoseEvent[] = [
-  { time: 4, pose: "ARMS_UP" },
-  { time: 8, pose: "T_POSE" },
-  { time: 12, pose: "WARRIOR" },
-  { time: 16, pose: "SIDE_BEND" },
+  { time: 4, pose: "REACH_RIGHT_HIP" },
+  { time: 8, pose: "REACH_LEFT_HIP" },
+  { time: 12, pose: "MIDDLE_SPLITS" },
+  { time: 16, pose: "MIDDLE_SPLITS_LEFT" },
+  { time: 20, pose: "MIDDLE_SPLITS_RIGHT" },
+  { time: 24, pose: "KICK_LEFT_UP" },
+  { time: 28, pose: "KICK_RIGHT_UP" },
+  { time: 32, pose: "COBRA" },
+  { time: 36, pose: "BUTTERFLY" },
+  { time: 40, pose: "BUTTERFLY_REACH" }
 ];
 
 const RhythmGame: React.FC = () => {
@@ -150,6 +167,7 @@ const RhythmGame: React.FC = () => {
       <audio ref={audioRef} src="/audio/Mark Ronson - Uptown Funk (Lyrics) ft. Bruno Mars.mp3" preload="auto" />
       <PoseCamera
         targetStretch={gameActive && poseWindow ? routine[routineIdx]?.pose : undefined}
+        score={score}
         onPoseMatch={handlePoseMatch}
         showDebug={false}
       />

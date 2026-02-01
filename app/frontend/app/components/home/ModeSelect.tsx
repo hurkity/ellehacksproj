@@ -2,21 +2,28 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 
-const ModeSelect: React.FC = () => {
+
+interface ModeSelectProps {
+  buttonSize?: "large" | "default";
+}
+
+const ModeSelect: React.FC<ModeSelectProps> = ({ buttonSize = "default" }) => {
   const router = useRouter();
+  const imgSize = buttonSize === "large" ? 240 : 180;
+  const gapSize = 4;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 24 }}>
+    <div style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: gapSize }}>
       <img
         src="/solostretch.png"
         alt="Solo Stretch"
-        style={{ width: 180, height: 'auto', cursor: 'pointer', borderRadius: 12 }}
+        style={{ width: imgSize, height: 'auto', cursor: 'pointer', borderRadius: 18}}
         onClick={() => router.push("/levels")}
       />
       <img
         src="/coop.png"
         alt="Co-op Mode"
-        style={{ width: 180, height: 'auto', opacity: 0.7, borderRadius: 12 }}
+        style={{ width: imgSize, height: 'auto', opacity: 0.7, borderRadius: 18}}
       />
     </div>
   );
